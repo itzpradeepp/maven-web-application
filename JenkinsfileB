@@ -1,0 +1,97 @@
+def notifyBuild(String buildStatus = 'STARTED') {
+  // build status of null means successful
+  buildStatus =  buildStatus ?: 'SUCCESSFUL'
+
+  // Default values
+  def colorName = 'RED'
+  def colorCode = '#FF0000'
+  def subject = "${buildStatus}: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]'"
+  def summary = "${subject} (${env.BUILD_URL})"
+
+  // Override default values based on build status
+  if (buildStatus == 'STARTED') {
+    color = 'YELLOW'
+    colorCode = '#FFFF00'
+  } else if (buildStatus == 'SUCCESSFUL') {
+    color = 'GREEN'
+    colorCode = '#00FF00'
+  } else {
+    color = 'RED'
+    colorCode = '#FF0000'
+  }
+
+  // Send notifications
+  slackSend (color: colorCode, message: summary, channel: 'study' )
+}
+
+
+
+
+
+pipeline{
+agent any
+tools {
+    maven "Maven3.8.5"
+}
+
+parameters {
+  choice choices: ['master', 'development', 'test ', 'uat ', 'qa'], description: 'Choose Branch ', name: 'BranchName'
+  string defaultValue: 'Pradeep Meena', description: 'Project Done By :', name: 'PersonName'
+}
+
+triggers {
+  pollSCM '* * * * *'
+}
+options {
+  buildDiscarder logRotator(artifactDaysToKeepStr: '', artifactNumToKeepStr: '5', daysToKeepStr: '', numToKeepStr: '5')
+  timestamps ()
+}
+stages{
+    
+stage('checkOutCode')
+{
+steps{
+    notifyBuild('STARTED')
+git branch: "${params.BranchName}", credentialsId: 'b0bdc984-1cff-485a-a6dc-d3671636dc48', url: 'https://github.com/itzpradeepp/maven-web-application.git'
+}
+}
+stage('BuildArtifacts')
+{
+steps{
+    sh "mvn clean package"
+}    
+}
+/* stage('GeneartingSonarQubeReport')
+{
+    steps{
+        sh "mvn sonar:sonar"
+    }
+}
+stage('UploadingArtifacts')
+{
+    steps{
+        sh "mvn deploy"
+    }
+}
+stage('deployToTomcat')
+{
+    steps{
+        sshagent(['f38464c1-10b8-45c2-8cd6-10c80d23b3a7']) {
+    sh "scp -o StrictHostKeyChecking=no target/maven-web-application.war  ec2-user@35.154.159.195:/opt/apache-tomcat-9.0.63/webapps/"
+}
+    } 
+} */
+
+}//StagesClosing
+
+post {
+  success {
+    notifyBuild('SUCCESSFUL')
+  }
+  failure {
+    notifyBuild('FAILURE')
+  }
+}
+
+
+}//pipelineClosing
