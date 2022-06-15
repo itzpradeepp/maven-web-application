@@ -33,6 +33,12 @@ agent any
 tools {
     maven "Maven3.8.5"
 }
+
+parameters {
+  choice choices: ['master', 'development', 'test ', 'uat ', 'qa'], description: 'Choose Branch ', name: 'BranchName'
+  string defaultValue: 'Pradeep Meena', description: 'Project Done By :', name: 'PersonName'
+}
+
 triggers {
   pollSCM '* * * * *'
 }
@@ -46,7 +52,7 @@ stage('checkOutCode')
 {
 steps{
     notifyBuild('STARTED')
-git branch: 'development', credentialsId: 'b0bdc984-1cff-485a-a6dc-d3671636dc48', url: 'https://github.com/itzpradeepp/maven-web-application.git'
+git branch: "${params.BranchName}", credentialsId: 'b0bdc984-1cff-485a-a6dc-d3671636dc48', url: 'https://github.com/itzpradeepp/maven-web-application.git'
 }
 }
 stage('BuildArtifacts')
