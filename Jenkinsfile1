@@ -30,22 +30,17 @@ node {
      notifyBuild('STARTED')
     def mavenHome= tool name :"Maven3.8.5"
     
-    parameters {
-  choice choices: ['master', 'development', 'test ', 'uat ', 'qa'], description: 'Choose Branch ', name: 'BranchName'
-  string defaultValue: 'Pradeep Meena', description: 'Project Done By :', name: 'PersonName'
-}
-    
     
     try {
         stage('CheckOutCode')
     {
-        git branch: "${params.BranchName}", credentialsId: '01b868c4-c344-456e-9d3a-9c5ae215d89e', url: 'https://github.com/itzpradeepp/maven-web-application.git'
+        git branch: 'development', credentialsId: '01b868c4-c344-456e-9d3a-9c5ae215d89e', url: 'https://github.com/itzpradeepp/maven-web-application.git'
     }
     stage('BuildArtifact')
     { 
         sh "${mavenHome}/bin/mvn clean package"
     }
-    /* stage('ExecuteSonarReport')
+    stage('ExecuteSonarReport')
     {
         sh "${mavenHome}/bin/mvn sonar:sonar"
     }
@@ -58,7 +53,7 @@ node {
         sshagent(['f38464c1-10b8-45c2-8cd6-10c80d23b3a7']) {
     sh "scp -o StrictHostKeyChecking=no target/maven-web-application.war ec2-user@35.154.159.195:/opt/apache-tomcat-9.0.63/webapps/"
 }
-    } */
+    }
     
     }
      catch (e) {
