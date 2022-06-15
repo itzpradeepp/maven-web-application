@@ -30,11 +30,16 @@ node {
      notifyBuild('STARTED')
     def mavenHome= tool name :"Maven3.8.5"
     
+    parameters {
+  choice choices: ['master', 'development', 'test ', 'uat ', 'qa'], description: 'Choose Branch ', name: 'BranchName'
+  string defaultValue: 'Pradeep Meena', description: 'Project Done By :', name: 'PersonName'
+}
+    
     
     try {
         stage('CheckOutCode')
     {
-        git branch: 'development', credentialsId: '01b868c4-c344-456e-9d3a-9c5ae215d89e', url: 'https://github.com/itzpradeepp/maven-web-application.git'
+        git branch: '$params.BranchName', credentialsId: '01b868c4-c344-456e-9d3a-9c5ae215d89e', url: 'https://github.com/itzpradeepp/maven-web-application.git'
     }
     stage('BuildArtifact')
     { 
