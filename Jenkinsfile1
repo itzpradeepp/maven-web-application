@@ -26,7 +26,7 @@ def notifyBuild(String buildStatus = 'STARTED') {
 
 
 
-node {
+node('node103') {
      notifyBuild('STARTED')
     def mavenHome= tool name :"Maven3.8.5"
     
