@@ -55,7 +55,7 @@ steps{
     sh "mvn clean package"
 }    
 }
-stage('GeneartingSonarQubeReport')
+/* stage('GeneartingSonarQubeReport')
 {
     steps{
         sh "mvn sonar:sonar"
@@ -74,7 +74,7 @@ stage('deployToTomcat')
     sh "scp -o StrictHostKeyChecking=no target/maven-web-application.war  ec2-user@35.154.159.195:/opt/apache-tomcat-9.0.63/webapps/"
 }
     } 
-}
+} */
 
 }//StagesClosing
 
