@@ -40,11 +40,11 @@ node('node103') {
     { 
         sh "${mavenHome}/bin/mvn clean package"
     }
-    stage('TriggerNextBuild')
+    /* stage('TriggerNextBuild')
     {
     build job : "pipelineDeclarative2"
     }
-   /* stage('ExecuteSonarReport')
+    stage('ExecuteSonarReport')
     {
         sh "${mavenHome}/bin/mvn sonar:sonar"
     }
