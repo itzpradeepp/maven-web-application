@@ -39,7 +39,7 @@ node {
     try {
         stage('CheckOutCode')
     {
-        git branch: '$params.BranchName', credentialsId: '01b868c4-c344-456e-9d3a-9c5ae215d89e', url: 'https://github.com/itzpradeepp/maven-web-application.git'
+        git branch: "${params.BranchName}", credentialsId: '01b868c4-c344-456e-9d3a-9c5ae215d89e', url: 'https://github.com/itzpradeepp/maven-web-application.git'
     }
     stage('BuildArtifact')
     { 
